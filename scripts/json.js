@@ -111,15 +111,6 @@ var gallery = {
 			showGallery();
 
 		
-		// 4. Відфільтрувати картинки по переданому полю.
-		console.log('4. Відфільтрувати картинки по переданому полю')
-		function filterGallery(galleryArr, i) {
-			var filter = "";
-		       filter = JSON.stringify(galleryArr, [i]);
-			filter = JSON.parse(filter);
-		}
-		filterGallery(gallery.images, "description");
-		showGallery();
- 
+	
 
 // to be continue...
