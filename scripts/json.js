@@ -30,87 +30,200 @@ var gallery = {
 
 		//	2. Написати функцію, що буде виводити на екран інформацію про передані картинки галереї. Та використовувати її для виведення результату роботи всіх функцій галереї.
 
-		function showGallery() {
-			for (var i = 0; i < gallery.images.length; i++) {
-				console.log(gallery.images[i]);
+		function showGallery(galleryParam) {
+			for (var i = 0; i < galleryParam.images.length; i++) {
+				console.log(galleryParam.images[i]);
 			}
 				console.log('----------------------------'); //просто для отделения в консоле (что бы не слипалось)
 		}
-		showGallery();
+		showGallery(gallery);
 
 		// 1.1 додати слайд
-		function addNewImage (name, path, description, date) {
+		function addNewImage (galleryParam, name, path, description, date) {
 			var newImg = {};
 			newImg.name = name || "";
 			newImg.path = path || "";
 			newImg.description = description || "";
-			newImg.date = date || "";
-			gallery.images.push(newImg);
+			newImg.date = Date.parse(date) || new Date();
+			galleryParam.images.push(newImg);
+
 		}
 
 		//создание нового слайда
-		console.log('Создание новго слайда "cato-dog"');
-		addNewImage('cato-dog','images/cato_dog.png',"Fanny animal:)","2014-07-27T09:07:47.683Z");
+		console.log('1.1 Создание новго слайда "cato-dog"');
+		addNewImage(gallery,'cato-dog','images/cato_dog.png',"Fanny animal:)", Date.now());
 
-		showGallery();
+		showGallery(gallery);
 
-
-		// 1.2 редагувати слайд (старый параметр меняем на новый)
-		function editImage(oldName, newParam) {
-			for (var i = 0; i < gallery.images.length; i++) {
-				if (gallery.images[i].name === oldName) {
-					gallery.images[i].name = newParam;
-				} else if (gallery.images[i].path === oldName) {
-					gallery.images[i].path = newParam;
-				} else if (gallery.images[i].description === oldName) {
-					gallery.images[i].description = newParam;
-				} else if(gallery.images[i].date === oldName) {
-					gallery.images[i].date = newParam || new Date() ;
+	// 1.2 редагувати слайд (старый параметр меняем на новый)
+		function editImage(galleryParam, oldName, newParam) {
+			for (var i = 0; i < galleryParam.images.length; i++) {
+				if (galleryParam.images[i].name === oldName) {
+					galleryParam.images[i].name = newParam;
+				} else if (galleryParam.images[i].path === oldName) {
+					galleryParam.images[i].path = newParam;
+				} else if (galleryParam.images[i].description === oldName) {
+					galleryParam.images[i].description = newParam;
+				} else if(galleryParam.images[i].date === oldName) {
+					galleryParam.images[i].date = newParam || new Date() ;
 				}
 			}
-			showGallery();
 		}
-		console.log('меняем параметр "description" в слайда "cato-dog"');
-		editImage('Fanny animal:)','sad animal:(')
+		console.log('1.2 меняем параметр "description" в слайда "cato-dog"');
+		editImage(gallery, 'Fanny animal:)','sad animal:(');
+		showGallery(gallery);
 
-
+	
 		// 1.3 удалить слайд (по названии картинки)
-		function deleteImage (nameSlide) {
+		function deleteImage (galleryParam, nameSlide) {
 
-			console.log('Всех слайдов ' + gallery.images.length);
+			console.log('Всех слайдов ' + galleryParam.images.length);
 
-			for (var i = 0; i < gallery.images.length; i++) {
-				if (gallery.images[i].name === nameSlide) {
-					console.log('Вот этот слайд Вы удаляете "' + gallery.images[i].name + '"')
-					gallery.images.splice(i,1); 
+			for (var i = 0; i < galleryParam.images.length; i++) {
+				if (galleryParam.images[i].name === nameSlide) {
+					console.log('Вот этот слайд Вы удаляете "' + galleryParam.images[i].name + '"')
+					galleryParam.images.splice(i,1); 
 
-					console.log('Теперь всех слайдов ' + gallery.images.length);
+					console.log('Теперь всех слайдов ' + galleryParam.images.length);
 				}
 			}
-			showGallery();
 		}
 
-		console.log('Удаляем слайд "dinosaur"');
-		deleteImage('dinosaur');
+		console.log('1.3 Удаляем слайд "dinosaur"');
+		deleteImage(gallery,'dinosaur');
+		showGallery(gallery);
 
 
 		// 3. Відсортувати картинки по зазначеному полю (поле передавати аргументом у функцію)
 	
-		function sortImages(methodSort) {
-			gallery.images.sort(function compareName(nameA, nameB){
+		function sortImages(galleryParam, methodSort) {
+			galleryParam.images.sort(function compareName(nameA, nameB){
 				return nameA[methodSort] > nameB[methodSort];
 			});	
 			
 		}
-			sortImages('description');
+			sortImages(gallery,'description');
 			console.log('3. Отсортировано по имени "description"');
-			showGallery();
+			showGallery(gallery);
 			
-			sortImages('name');
+			sortImages(gallery,'name');
 			console.log('3. Отсортировано по имени "name" и т.д.');
-			showGallery();
+			showGallery(gallery);
 
 		
-	
+		// 4. Відфільтрувати картинки по переданому полю.
+		console.log('4. Відфільтрувати картинки по переданому полю (в даном случае "description")');
 
-// to be continue...
+		function filterImages(galleryParam, name) {
+			var imagesWithoutField;
+			for (var i = 0; i < galleryParam.images.length; i++) {
+				if (galleryParam.images[i][name] == '') {
+					imagesWithoutField = galleryParam.images[i];
+					console.log(imagesWithoutField);
+				}
+			}
+		}
+		filterImages(gallery, 'description');
+		console.log('-----------------------');
+
+		//5. Серіалізувати галерею в формат JSON. Додати можливість серіалізувати поля по деякій умові. Наприклад, лише імена картинок, або лише картинки, що мають шлях до файла.
+		console.log('5. Серіалізвати галерею в формат JSON. Додати можливість серіалізувати поля по деякій умові. Наприклад, лише імена картинок, або лише картинки, що мають шлях до файла.');
+
+		function toStringAndToObject(galleryParam){
+
+			var stringGallery = JSON.stringify(galleryParam,false, 1);
+			console.log('------------------ в JSON')
+			console.log(stringGallery);
+
+			var galleryObject = JSON.parse(stringGallery, function(key, value) {
+				if (key == 'date') return new Date(value);
+				return value;
+			});
+			console.log('------------------ в Object')
+			console.log(galleryObject);
+		}
+		toStringAndToObject(gallery);
+
+		console.log('Сериализувати по условию')
+		function serializName(galleryParam, serializParam) {
+			var serializGallery = JSON.stringify(galleryParam.images, [serializParam],1);
+			console.log(serializGallery)
+		}
+		serializName(gallery, 'name');
+
+
+		//6. Написати функцію, що буде перевіряти, чи всі картинки мають опис.
+		console.log('6. Написати функцію, що буде перевіряти, чи всі картинки мають опис.');
+
+		function isImageDescription(galleryParam){
+			for (var i = 0; i < galleryParam.images.length; i++) {
+				if (galleryParam.images[i].description === '') {
+					console.log(galleryParam.images[i].name + " - картинка не имеет описания.");
+				}
+			}
+		}
+		isImageDescription(gallery);
+
+		//Створити ще одну галерею, та викликати функції першої галереї в контексті другої.
+		console.log('------------------------------------------------------------------------------------------');
+		console.log('Створити ще одну галерею, та викликати функції першої галереї в контексті другої.');
+
+		var gallery2 = {
+		images : [
+				{
+					"name": "Maikl",
+					"path": "images/maikl.png",
+					"description": "This is Maik",
+					"date": "2014-07-21T09:05:34.540Z"
+				},
+				{
+					"name": "Bill",
+					"path": "images/dill.png",
+					"description": "This is Bill",
+					"date": "2014-07-21T09:06:05.544Z"
+				},
+				{
+					"name": "Fill",
+					"path": "images/fill.png",
+					"description": "",
+					"date": "2014-07-21T09:07:24.187Z"
+				},
+				{
+					"name": "Jon",
+					"path": "images/jon.png",
+					"description": "This is Jon",
+					"date": "2014-07-21T09:07:47.683Z"
+				},
+				{
+					"name": "Den",
+					"path": "images/den.png",
+					"description": "",
+					"date": "2014-07-21T09:07:47.683Z"
+				}
+			]
+		};
+
+		showGallery(gallery2);
+
+		//создание
+		addNewImage(gallery2,'Vasya','images/vasya.png',"vasya:)", Date.now());
+		//вывод в консоль галерейки
+		showGallery(gallery2);
+
+		//редактирование
+		editImage(gallery2, "vasya:)",'sad Vasya:(');
+		showGallery(gallery2);
+
+		//удаление
+		deleteImage(gallery2,'Jon');
+		showGallery(gallery2);
+
+		//фильтер на отсутствие поля
+		filterImages(gallery2, 'description');
+
+		// переобразование в JSON и назад в Object
+		toStringAndToObject(gallery2);
+		//сериализовать по имени
+		serializName(gallery2, 'name');
+		//все ли картинки имеют описание
+		isImageDescription(gallery2);
